@@ -95,6 +95,8 @@ function init{algType<:OrdinaryDiffEqAlgorithm,recompile_flag}(
     u = prob.u0
   elseif typeof(prob.u0) <: Tuple
     u = ArrayPartition(prob.u0,Val{true})
+  elseif typeof(prob.u0) <: Function
+    u = prob.u0(p,t)
   else
     u = deepcopy(prob.u0)
   end
