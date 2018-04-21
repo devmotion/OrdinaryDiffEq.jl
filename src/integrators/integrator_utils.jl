@@ -78,10 +78,10 @@ function savevalues!(integrator::ODEIntegrator,force_save=false,reduce_size=true
       if typeof(integrator.alg) <: FunctionMap || integrator.opts.dense
         integrator.saveiter_dense +=1
         if integrator.opts.dense
-          if integrator.opts.save_idxs ==nothing
+          if integrator.opts.dense_idxs ==nothing
             copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,integrator.k)
           else
-            copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,[k[integrator.opts.save_idxs] for k in integrator.k],Val{false})
+            copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,[k[integrator.opts.dense_idxs] for k in integrator.k],Val{false})
           end
         end
       end
@@ -101,10 +101,10 @@ function savevalues!(integrator::ODEIntegrator,force_save=false,reduce_size=true
     if typeof(integrator.alg) <: FunctionMap || integrator.opts.dense
       integrator.saveiter_dense +=1
       if integrator.opts.dense
-        if integrator.opts.save_idxs == nothing
+        if integrator.opts.dense_idxs == nothing
           copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,integrator.k)
         else
-          copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,[k[integrator.opts.save_idxs] for k in integrator.k],Val{false})
+          copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,[k[integrator.opts.dense_idxs] for k in integrator.k],Val{false})
         end
       end
     end
@@ -135,10 +135,10 @@ function solution_endpoint_match_cur_integrator!(integrator)
     if typeof(integrator.alg) <: FunctionMap || integrator.opts.dense
       integrator.saveiter_dense +=1
       if integrator.opts.dense
-        if integrator.opts.save_idxs == nothing
+        if integrator.opts.dense_idxs == nothing
           copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,integrator.k)
         else
-          copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,[k[integrator.opts.save_idxs] for k in integrator.k],Val{false})
+          copyat_or_push!(integrator.sol.k,integrator.saveiter_dense,[k[integrator.opts.dense_idxs] for k in integrator.k],Val{false})
         end
       end
     end

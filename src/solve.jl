@@ -17,7 +17,7 @@ function init{algType<:OrdinaryDiffEqAlgorithm,recompile_flag}(
   saveat = eltype(prob.tspan)[],
   tstops = eltype(prob.tspan)[],
   d_discontinuities= eltype(prob.tspan)[],
-  save_idxs = nothing,
+  save_idxs = nothing, dense_idxs = save_idxs,
   save_everystep = isempty(saveat),
   save_timeseries = nothing,save_start = true,save_end = true,
   callback=nothing,
@@ -149,10 +149,10 @@ function init{algType<:OrdinaryDiffEqAlgorithm,recompile_flag}(
 
 
   ### Algorithm-specific defaults ###
-  if save_idxs == nothing
+  if dense_idxs == nothing
     ksEltype = Vector{rateType}
   else
-    ks_prototype = rate_prototype[save_idxs]
+    ks_prototype = rate_prototype[dense_idxs]
     ksEltype = Vector{typeof(ks_prototype)}
   end
 
@@ -192,9 +192,13 @@ function init{algType<:OrdinaryDiffEqAlgorithm,recompile_flag}(
     copyat_or_push!(ts,1,t)
     if save_idxs == nothing
       copyat_or_push!(timeseries,1,u)
-      copyat_or_push!(ks,1,[rate_prototype])
     else
       copyat_or_push!(timeseries,1,u_initial,Val{false})
+    end
+
+    if dense_idxs == nothing
+      copyat_or_push!(ks,1,[rate_prototype])
+    else
       copyat_or_push!(ks,1,[ks_prototype])
     end
   else
@@ -208,13 +212,14 @@ function init{algType<:OrdinaryDiffEqAlgorithm,recompile_flag}(
                    typeof(internalnorm),typeof(callbacks_internal),typeof(isoutofdomain),
                    typeof(progress_message),typeof(unstable_check),typeof(tstops_internal),
                    typeof(d_discontinuities_internal),typeof(userdata),typeof(save_idxs),
-                   typeof(maxiters),typeof(tstops),typeof(saveat),
+                   typeof(dense_idxs),typeof(maxiters),typeof(tstops),typeof(saveat),
                    typeof(d_discontinuities)}(
                        maxiters,timeseries_steps,save_everystep,adaptive,abstol_internal,
                        reltol_internal,QT(gamma),QT(qmax),
                        QT(qmin),QT(qsteady_max),
                        QT(qsteady_min),QT(failfactor),tType(dtmax),
-                       tType(dtmin),internalnorm,save_idxs,tstops_internal,saveat_internal,
+                       tType(dtmin),internalnorm,save_idxs,dense_idxs,
+                       tstops_internal,saveat_internal,
                        d_discontinuities_internal,
                        tstops,saveat,d_discontinuities,
                        userdata,progress,progress_steps,
